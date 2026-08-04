@@ -32,6 +32,28 @@ class Agenda:
             print(f"✅ Eliminado: {e.nombre}")
         
         return True
-    
+
+    def editar(self, nombre: str, campo: str, nuevo_valor):
+        encontrados = self.buscar(nombre)
+        if len(encontrados) == 0:
+            print(f"❌ No se encontró '{nombre}'")
+            return False
+        
+        contacto = encontrados[0]
+        
+        if campo == "nombre":
+            contacto.nombre = nuevo_valor
+        elif campo == "telefono":
+            contacto.telefono = nuevo_valor
+        elif campo == "email":
+            contacto.email = nuevo_valor
+        elif campo == "nacimiento":
+            contacto.nacimiento = nuevo_valor
+        else:
+            print("❌ Campo no válido. Opciones: nombre, telefono, email, nacimiento")
+            return False
+        
+        print(f"✅ {contacto.nombre} actualizado correctamente")
+        return True
 
 
