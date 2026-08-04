@@ -1,0 +1,14 @@
+[
+  {
+    "nombre": "Ana López",
+    "telefono": "555-1234",
+    "email": "ana@email.com",
+    "nacimiento": "1990-05-15"
+  },
+  {
+    "nombre": "Luis Pérez",
+    "telefono": "555-5678",
+    "email": "luis@email.com",
+    "nacimiento": "1985-08-20"
+  }
+]
