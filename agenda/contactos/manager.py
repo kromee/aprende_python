@@ -21,4 +21,17 @@ class Agenda:
     def buscar(self, nombre: str):
         return [c for c in self.contactos if nombre.lower() in c.nombre.lower()]
 
+    def eliminar(self, nombre: str):
+        encontrados = self.buscar(nombre)
+        if len(encontrados) == 0:
+            print(f"❌ No se encontró '{nombre}'")
+            return False
+        
+        for e in encontrados:
+            self.contactos.remove(e)
+            print(f"✅ Eliminado: {e.nombre}")
+        
+        return True
+    
+
 
