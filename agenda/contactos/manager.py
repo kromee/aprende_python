@@ -6,7 +6,14 @@ class Agenda:
         self.contactos: list[Contacto] = []
 
     def agregar(self, contacto: Contacto):
+        for c in self.contactos:
+            if c.email == contacto.email:
+                print(f"❌ Ya existe un contacto con el email: {contacto.email}")
+                return False
+        
         self.contactos.append(contacto)
+        print(f"✅ {contacto.nombre} agregado correctamente")
+        return True
 
 
 

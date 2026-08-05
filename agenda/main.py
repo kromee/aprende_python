@@ -31,8 +31,7 @@ while True:
         try:
             nacimiento = datetime.strptime(fecha_str, "%Y-%m-%d")
             contacto = Contacto(nombre, telefono, email, nacimiento)
-            mi_agenda.agregar(contacto)
-            print(f"✅ {nombre} agregado correctamente")
+            mi_agenda.agregar(contacto)  # Ya no necesitamos print aquí, el método lo hace
         except ValueError:
             print("❌ Fecha inválida. Usa el formato AAAA-MM-DD")
 
