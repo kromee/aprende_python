@@ -1,32 +1,31 @@
+import sqlite3
 from .models import Contacto
+from data import database
 
-class Agenda: 
-
-    def __init__(self):
-        self.contactos: list[Contacto] = []
-
+class Agenda:
     def agregar(self, contacto: Contacto):
-        for c in self.contactos:
-            if c.email == contacto.email:
-                print(f"❌ Ya existe un contacto con el email: {contacto.email}")
-                return False
-        
-        self.contactos.append(contacto)
-        print(f"✅ {contacto.nombre} agregado correctamente")
-        return True
-
-
-
-    def eliminar_contacto(self, nombre):
-        self.contactos = [c for c in self.contactos if c.nombre != nombre]
+        try:
+            database.guardar(contacto)
+            print(f"✅ {contacto.nombre} agregado correctamente")
+            return True
+        except sqlite3.IntegrityError:
+            print(f"❌ Ya existe un contacto con el email: {contacto.email}")
+            return False
+        except Exception as e:
+            print(f"❌ Error al agregar: {e}")
+            return False
 
     def listar(self):
-        for c in self.contactos:
+        contactos = database.cargar()
+        if len(contactos) == 0:
+            print("No hay contactos")
+            return
+        
+        for c in contactos:
             print(f"{c.nombre} | {c.telefono} | {c.email}")
 
-
     def buscar(self, nombre: str):
-        return [c for c in self.contactos if nombre.lower() in c.nombre.lower()]
+        return database.buscar(nombre)
 
     def eliminar(self, nombre: str):
         encontrados = self.buscar(nombre)
@@ -35,7 +34,7 @@ class Agenda:
             return False
         
         for e in encontrados:
-            self.contactos.remove(e)
+            database.eliminar_por_email(e.email)
             print(f"✅ Eliminado: {e.nombre}")
         
         return True
@@ -47,20 +46,12 @@ class Agenda:
             return False
         
         contacto = encontrados[0]
+        email_objetivo = contacto.email
         
-        if campo == "nombre":
-            contacto.nombre = nuevo_valor
-        elif campo == "telefono":
-            contacto.telefono = nuevo_valor
-        elif campo == "email":
-            contacto.email = nuevo_valor
-        elif campo == "nacimiento":
-            contacto.nacimiento = nuevo_valor
-        else:
-            print("❌ Campo no válido. Opciones: nombre, telefono, email, nacimiento")
+        if campo == "nacimiento":
+            print("❌ Para editar fecha, usa el email directamente")
             return False
         
+        database.editar(email_objetivo, campo, nuevo_valor)
         print(f"✅ {contacto.nombre} actualizado correctamente")
         return True
-
-
