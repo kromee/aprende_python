@@ -2,7 +2,6 @@ import sqlite3
 from dataclasses import dataclass
 from datetime import datetime
 
-# Definición interna (solo para usar dentro de este archivo)
 @dataclass
 class ContactoDB:
     nombre: str
@@ -47,3 +46,38 @@ def guardar(contacto: ContactoDB):
             (contacto.nombre, contacto.telefono, contacto.email, contacto.nacimiento.strftime("%Y-%m-%d"))
         )
         conn.commit()
+
+def buscar_por_email(email: str):
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.execute(
+            "SELECT nombre, telefono, email, nacimiento FROM contactos WHERE email = ?",
+            (email,)
+        )
+        fila = cursor.fetchone()
+        if fila is None:
+            return None
+        return ContactoDB(
+            nombre=fila[0],
+            telefono=fila[1],
+            email=fila[2],
+            nacimiento=datetime.strptime(fila[3], "%Y-%m-%d")
+        )
+
+def editar(email: str, campo: str, nuevo_valor: str):
+    campos_permitidos = {"nombre", "telefono", "email"}
+    if campo not in campos_permitidos:
+        return False
+    
+    with sqlite3.connect(DB_PATH) as conn:
+        conn.execute(
+            f"UPDATE contactos SET {campo} = ? WHERE email = ?",
+            (nuevo_valor, email)
+        )
+        conn.commit()
+        return True
+
+def eliminar_por_email(email: str):
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.execute("DELETE FROM contactos WHERE email = ?", (email,))
+        conn.commit()
+        return cursor.rowcount > 0
